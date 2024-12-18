@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import "Scoreapi_go/items"
 
 func main() {
-	fmt.Println("and now its starts")
+	itemsList, err := items.NewTypeItems("beers")
+	if err != nil {
+		panic(err)
+	}
+	itemsList.RemoveItemByName("kozel")
 }
