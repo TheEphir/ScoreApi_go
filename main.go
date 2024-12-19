@@ -7,31 +7,42 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type postedItem struct {
+	Type        string `json:"item_type"`
+	Name        string `json:"name"`
+	Score       int    `json:"score"`
+	Image       string `json:"image"`
+	Description string `json:"description"`
+}
+
 func main() {
 	router := gin.Default()
-	router.POST("/:type", postItem)
+	router.POST("/item", postItem)
 
 	router.Run("localhost:8080")
 }
 
 func postItem(c *gin.Context) {
-	itemType, err := items.NewTypeItems(c.Param("type"))
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, itemType)
-	}
-
-	posted := items.Item{}
-
+	posted := postedItem{}
 	if err := c.BindJSON(&posted); err != nil {
 		return
 	}
 
+	itemType, err := items.NewTypeItems(posted.Type)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+	}
+
 	item, err := items.NewItem(posted.Name, posted.Score, posted.Image, posted.Description)
 	if err != nil {
-		// SHOULD CHECK HOW TO RETURN ERR TEXT
-		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"message": err})
+		c.IndentedJSON(http.StatusUnprocessableEntity, gin.H{"message": err.Error()})
 	}
 
 	itemType.AddItem(*item)
 	c.IndentedJSON(http.StatusCreated, item)
+}
+
+func showTypes() {
+	// Should read jsons names?
+	return
 }

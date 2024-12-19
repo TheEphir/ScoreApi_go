@@ -14,16 +14,16 @@ type TypeItems struct {
 }
 
 func NewTypeItems(itemType string) (*TypeItems, error) {
+	if itemType == "" {
+		return nil, errors.New("GOT_EMPTY_TYPE")
+	}
+
 	file, err := files.ReadFile(itemType)
 	if err != nil {
 		return &TypeItems{
 			ItemType: itemType,
 			Items:    []Item{},
 		}, nil
-	}
-
-	if itemType == "" {
-		return nil, errors.New("GOT_EMPTY_TYPE")
 	}
 
 	var itemsList TypeItems
