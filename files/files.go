@@ -1,9 +1,12 @@
 package files
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 func ReadFile(fileName string) ([]byte, error) {
-	fileData, err := os.ReadFile(fileName + ".json")
+	fileData, err := os.ReadFile("./db/" + fileName + ".json")
 	if err != nil {
 		return nil, err
 	}
@@ -11,7 +14,7 @@ func ReadFile(fileName string) ([]byte, error) {
 }
 
 func WriteFile(fileName string, content []byte) error {
-	file, err := os.Create(fileName + ".json") //mb it's ok creating new file, think its gonna rewrite file O_O
+	file, err := os.Create("./db/" + fileName + ".json") //mb it's ok creating new file, think its gonna rewrite file O_O
 	if err != nil {
 		return err
 	}
@@ -22,4 +25,20 @@ func WriteFile(fileName string, content []byte) error {
 		return err
 	}
 	return nil
+}
+
+func ReadDb() ([]string, error) {
+	files, err := os.ReadDir("./db")
+	if err != nil {
+		return nil, err
+	}
+
+	fList := []string{}
+
+	for _, item := range files {
+		fName := strings.Split(item.Name(), ".")
+		fList = append(fList, fName[0])
+	}
+
+	return fList, nil
 }

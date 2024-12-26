@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Scoreapi_go/files"
 	"Scoreapi_go/items"
 	"net/http"
 
@@ -17,6 +18,8 @@ type postedItem struct {
 
 func main() {
 	router := gin.Default()
+
+	router.GET("/types", showTypes)
 	router.POST("/item", postItem)
 
 	router.Run("localhost:8080")
@@ -42,7 +45,11 @@ func postItem(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, item)
 }
 
-func showTypes() {
-	// Should read jsons names?
-	return
+func showTypes(c *gin.Context) {
+	res, err := files.ReadDb()
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err})
+	}
+
+	c.IndentedJSON(http.StatusOK, res)
 }
