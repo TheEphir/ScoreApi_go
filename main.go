@@ -20,6 +20,7 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/types", showTypes)
+	router.GET("/:type/items", showItems)
 	router.POST("/item", postItem)
 
 	router.Run("localhost:8080")
@@ -28,7 +29,7 @@ func main() {
 func postItem(c *gin.Context) {
 	posted := postedItem{}
 	if err := c.BindJSON(&posted); err != nil {
-		return
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 	}
 
 	itemType, err := items.NewTypeItems(posted.Type)
@@ -52,4 +53,15 @@ func showTypes(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, res)
+}
+
+func showItems(c *gin.Context) {
+	itemType := c.Param("type")
+
+	res, err := items.NewTypeItems(itemType)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err})
+	}
+
+	c.IndentedJSON(http.StatusOK, res.Items)
 }

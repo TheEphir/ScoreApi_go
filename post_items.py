@@ -11,6 +11,7 @@ item = {
 url = "http://localhost:8080/item"
 
 def main():
-    print(requests.get(url="http://localhost:8080/types").text)
+    requests.post(url="http://localhost:8080/item", json=item)
+    #print(requests.get(url="http://192.168.0.132:8080/types").text)
 
 main()
