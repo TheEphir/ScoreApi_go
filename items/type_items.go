@@ -35,6 +35,28 @@ func NewTypeItems(itemType string) (*TypeItems, error) {
 	return &itemsList, nil
 }
 
+func ReadType(itemType string) (*TypeItems, error) {
+	if itemType == "" {
+		return nil, errors.New("GOT_EMPTY_TYPE")
+	}
+
+	file, err := files.ReadFile(itemType)
+	if err != nil {
+		return nil, err
+	}
+
+	var itemsList TypeItems
+
+	err = json.Unmarshal(file, &itemsList)
+	if err != nil {
+		return nil, err
+	}
+
+	return &itemsList, nil
+	// if can't find and read file -> got nil pointer to "itemsList" from functions below O_O and idk why.
+	// because func should exit with err right after "ReadFile"
+}
+
 func (itemsList *TypeItems) AddItem(item Item) {
 	itemsList.Items = append(itemsList.Items, item)
 

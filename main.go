@@ -21,6 +21,7 @@ func main() {
 
 	router.GET("/types", showTypes)
 	router.GET("/:type/items", showItems)
+	router.GET("/:type/:item", lookForItem)
 	router.POST("/item", postItem)
 
 	router.Run("localhost:8080")
@@ -64,4 +65,21 @@ func showItems(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, res.Items)
+}
+
+func lookForItem(c *gin.Context) {
+	itemType := c.Param("type")
+	itemName := c.Param("item")
+
+	db, err := items.ReadType(itemType)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "something wrong with type"})
+	}
+
+	res := db.SearchItemByName(itemName)
+	if len(res) < 1 {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err})
+	}
+
+	c.IndentedJSON(http.StatusOK, res)
 }
