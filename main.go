@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// should make edit func ?
+
 type postedItem struct {
 	Type        string `json:"item_type"`
 	Name        string `json:"name"`
@@ -22,6 +24,7 @@ func main() {
 	router.GET("/types", showTypes)
 	router.GET("/:type/items", showItems)
 	router.GET("/:type/:item", lookForItem)
+	router.DELETE("/:type/:item", delItem)
 	router.POST("/item", postItem)
 
 	router.Run("localhost:8080")
@@ -82,4 +85,20 @@ func lookForItem(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, res)
+}
+
+func delItem(c *gin.Context) {
+	itemType := c.Param("type")
+	itemName := c.Param("item")
+
+	db, err := items.ReadType(itemType)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err)
+	}
+
+	err = db.RemoveItemByName(itemName)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err)
+	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": itemName + " was removed"})
 }
