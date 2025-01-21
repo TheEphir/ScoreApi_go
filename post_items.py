@@ -1,8 +1,8 @@
 import requests
 
 item = {
-    "item_type": "beer",
-    "name": "kozel 123",
+    "item_type": "test",
+    "name": "test_item",
 	"score": 10,
 	"image": "",
 	"description": "",
@@ -11,7 +11,7 @@ item = {
 url = "http://localhost:8080/item"
 
 def main():
-    # requests.post(url="http://localhost:8080/item", json=item)
-    print(requests.delete(url="http://localhost:8080/film/avatar").text)
+    print(requests.post(url="http://localhost:8080/item", json=item))
+    # print(requests.delete(url="http://localhost:8080/film/avatar").text)
 
 main()
