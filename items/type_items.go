@@ -1,7 +1,6 @@
 package items
 
 import (
-	"Scoreapi_go/files"
 	"encoding/json"
 	"errors"
 	"fmt"

@@ -1,14 +1,15 @@
 package main
 
 import (
-	"Scoreapi_go/files"
+	"Scoreapi_go/connect"
 	"Scoreapi_go/items"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-// should make edit func ?
+// should edit items files due new db.
+// should make new functios in connect.go
 
 type postedItem struct {
 	Type        string `json:"item_type"`
@@ -21,13 +22,21 @@ type postedItem struct {
 func main() {
 	router := gin.Default()
 
-	router.GET("/types", showTypes)
+	router.GET("/ping", ping)
 	router.GET("/:type/items", showItems)
 	router.GET("/:type/:item", lookForItem)
 	router.DELETE("/:type/:item", delItem)
 	router.POST("/item", postItem)
 
-	router.Run("localhost:8080")
+	router.Run("localhost:8000")
+}
+
+func ping(c *gin.Context) {
+	conn, err := connect.NewConnection()
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+	}
+	c.IndentedJSON(http.StatusOK, conn)
 }
 
 func postItem(c *gin.Context) {
